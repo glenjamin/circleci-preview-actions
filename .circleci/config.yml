@@ -21,8 +21,10 @@ executors:
       - image: circleci/node:12
 
 commands:
-  npm-ci:
+  setup:
     steps:
+      - checkout:
+          path: ..
       - node/with-cache:
           cache-key: package-lock.json
           steps:
@@ -32,10 +34,9 @@ jobs:
 
   test:
     executor: node12
-    working_directory: trigger-pipeline
+    working_directory: ~/project/trigger-pipeline
     steps:
-      - checkout
-      - npm-ci
+      - setup
 
       - run:
           command: npm run prettier
@@ -46,6 +47,7 @@ jobs:
           when: always
 
       - run:
+          name: npm test
           command: npm test -- --reporters=default --reporters=jest-junit
           environment:
             JEST_JUNIT_OUTPUT_DIR: test-results
@@ -58,15 +60,17 @@ jobs:
       - run:
           command: npm run build
           when: always
+      - run:
+          name: show bundled action
+          command: cat action.bundle.js
       - store_artifacts:
           path: action.bundle.js
 
   publish:
     executor: node12
-    working_directory: trigger-pipeline
+    working_directory: ~/project/trigger-pipeline
     steps:
-      - checkout
-      - npm-ci
+      - setup
       - run: npm run build
       - run: cat action.bundle.js
       - store_artifacts:
