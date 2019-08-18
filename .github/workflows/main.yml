@@ -17,23 +17,13 @@ jobs:
       working-directory: trigger-pipeline
     - run: npm run typecheck
       working-directory: trigger-pipeline
+      if: always
     - run: npm test
       working-directory: trigger-pipeline
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/master'
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-node@v1
-      with:
-        node-version: 12
-    - run: npm ci
-      working-directory: trigger-pipeline
+      if: always
     - run: npm run build
       working-directory: trigger-pipeline
     - name: "publish code"
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/work-in-progress'
       run: |
         echo TODO - commit and push to a "latest" or otherwise versioned branch
-

@@ -1,6 +1,9 @@
 name: "CircleCI: Trigger Pipeline"
 description: Trigger a pipeline on CircleCI
 author: CircleCI
+branding:
+  icon: disc
+  color: white
 inputs:
   org:
     description: Name of the GitHub organization being used
