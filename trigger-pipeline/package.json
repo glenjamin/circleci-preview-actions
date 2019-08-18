@@ -1,0 +1,28 @@
+{
+  "name": "circleci-actions-trigger-pipeline",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "rollup --config",
+    "typecheck": "tsc",
+    "prettier": "prettier --check '**/*.js' '**/*.ts' '**/*.json'",
+    "test": "jest"
+  },
+  "author": "CircleCI",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@actions/core": "^1.0.0",
+    "@types/jest": "^24.0.13",
+    "@types/node": "^12.0.4",
+    "jest": "^24.8.0",
+    "jest-circus": "^24.7.1",
+    "prettier": "^1.18.2",
+    "rollup": "^1.19.4",
+    "rollup-plugin-commonjs": "^10.0.2",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.22.1",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.1"
+  },
+  "prettier": {}
+}

@@ -1,0 +1,15 @@
+name: "CircleCI: Trigger Pipeline"
+description: Trigger a pipeline on CircleCI
+author: CircleCI
+inputs:
+  org:
+    description: Name of the GitHub organization being used
+  repo:
+    description: Name of the GitHub repository being used
+  branch:
+    description: The branch to trigger the pipeline against
+  parameters_json:
+    description: Pipeline parameters, encoded as JSON
+runs:
+  using: node12
+  main: action.bundle.js

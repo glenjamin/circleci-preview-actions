@@ -1,2 +1,4 @@
 node_modules/
 __tests__/runner/*
+action.bundle.js
+.rpt2_cache
