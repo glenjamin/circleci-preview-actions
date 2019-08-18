@@ -17,10 +17,8 @@ jobs:
       working-directory: trigger-pipeline
     - run: npm run typecheck
       working-directory: trigger-pipeline
-      if: always
     - run: npm test
       working-directory: trigger-pipeline
-      if: always
     - run: npm run build
       working-directory: trigger-pipeline
     - name: "publish code"
