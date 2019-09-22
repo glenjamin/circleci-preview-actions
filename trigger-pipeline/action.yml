@@ -1,18 +1,25 @@
 name: "CircleCI: Trigger Pipeline"
 description: Trigger a pipeline on CircleCI
-author: CircleCI
+author: Glen Mailer
 branding:
   icon: disc
   color: white
 inputs:
   org:
-    description: Name of the GitHub organization being used
+    description: Name of the GitHub organization being used, defaults to current
+    required: false
   repo:
-    description: Name of the GitHub repository being used
+    description: Name of the GitHub repository being used, defaults to current
+    required: false
   branch:
-    description: The branch to trigger the pipeline against
+    description: The branch to trigger the pipeline against, defaults to current
+    required: false
   parameters_json:
     description: Pipeline parameters, encoded as JSON
+    required: false
+outputs:
+  pipeline_id:
+    description: the ID of the triggered pipeline
 runs:
   using: node12
   main: action.bundle.js
