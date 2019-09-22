@@ -25,6 +25,11 @@ commands:
           cache-key: package-lock.json
           steps:
             - run: npm ci
+      - run:
+          name: Setup Git Author
+          command: |
+            git config user.name "$CIRCLE_USERNAME via CircleCI"
+            git config user.email "circleci@example.com"
 
 jobs:
 
@@ -73,4 +78,20 @@ jobs:
       - setup
       - attach_workspace:
           at: .
-      - run: cat action.bundle.js
+      - run: git add --force action.bundle.js
+      - run: git commit -m "Build from $CIRCLE_BUILD_URL"
+      - add_ssh_keys:
+          fingerprints:
+            - "67:b3:f8:fb:b1:ce:46:48:d6:18:f2:fc:56:40:a3:c5"
+      - run:
+          name: publish to git
+          command: |
+            if [[ "$CIRCLE_BRANCH" == "master" ]]; then
+              echo TODO
+              exit 1
+            else
+              tag="dev-$CIRCLE_BRANCH"
+              git tag --annotate --force --message "Dev Build from $CIRCLE_BUILD_URL" $tag
+              git push --delete origin refs/tags/$tag || true
+              git push --force-with-lease origin $tag
+            fi
