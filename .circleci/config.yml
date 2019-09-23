@@ -87,8 +87,10 @@ jobs:
           name: publish to git
           command: |
             if [[ "$CIRCLE_BRANCH" == "master" ]]; then
-              echo TODO
-              exit 1
+              git push --force-with-lease origin v1
+              tag="v1-r$CIRCLE_BUILD_NUM"
+              git tag --annotate --message "Release from $CIRCLE_BUILD_URL" $tag
+              git push origin $tag
             else
               tag="dev-$CIRCLE_BRANCH"
               git tag --annotate --force --message "Dev Build from $CIRCLE_BUILD_URL" $tag
