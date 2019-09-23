@@ -87,11 +87,18 @@ jobs:
           name: publish to git
           command: |
             if [[ "$CIRCLE_BRANCH" == "master" ]]; then
-              git push --force-with-lease origin v1
+              # Mutable Release Tag
+              tag="v1"
+              git tag --annotate --force --message "Release from $CIRCLE_BUILD_URL" $tag
+              git push --delete origin refs/tags/$tag || true
+              git push --force-with-lease origin $tag
+
+              # Immutable Release Tag
               tag="v1-r$CIRCLE_BUILD_NUM"
               git tag --annotate --message "Release from $CIRCLE_BUILD_URL" $tag
               git push origin $tag
             else
+              # Mutable Dev Tag
               tag="dev-$CIRCLE_BRANCH"
               git tag --annotate --force --message "Dev Build from $CIRCLE_BUILD_URL" $tag
               git push --delete origin refs/tags/$tag || true
