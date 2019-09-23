@@ -7,10 +7,6 @@ workflows:
       - publish:
           requires:
             - test
-          filters:
-            branches:
-              only:
-                - master
 
 orbs:
   node: circleci/node@1.1.4
@@ -29,6 +25,11 @@ commands:
           cache-key: package-lock.json
           steps:
             - run: npm ci
+      - run:
+          name: Setup Git Author
+          command: |
+            git config user.name "$CIRCLE_USERNAME via CircleCI"
+            git config user.email "circleci@example.com"
 
 jobs:
 
@@ -63,6 +64,10 @@ jobs:
       - run:
           name: show bundled action
           command: cat action.bundle.js
+      - persist_to_workspace:
+          root: .
+          paths:
+            - action.bundle.js
       - store_artifacts:
           path: action.bundle.js
 
@@ -71,7 +76,24 @@ jobs:
     working_directory: ~/project/trigger-pipeline
     steps:
       - setup
-      - run: npm run build
-      - run: cat action.bundle.js
-      - store_artifacts:
-          path: action.bundle.js
+      - attach_workspace:
+          at: .
+      - run: git add --force action.bundle.js
+      - run: git commit -m "Build from $CIRCLE_BUILD_URL"
+      - add_ssh_keys:
+          fingerprints:
+            - "67:b3:f8:fb:b1:ce:46:48:d6:18:f2:fc:56:40:a3:c5"
+      - run:
+          name: publish to git
+          command: |
+            if [[ "$CIRCLE_BRANCH" == "master" ]]; then
+              git push --force-with-lease origin v1
+              tag="v1-r$CIRCLE_BUILD_NUM"
+              git tag --annotate --message "Release from $CIRCLE_BUILD_URL" $tag
+              git push origin $tag
+            else
+              tag="dev-$CIRCLE_BRANCH"
+              git tag --annotate --force --message "Dev Build from $CIRCLE_BUILD_URL" $tag
+              git push --delete origin refs/tags/$tag || true
+              git push --force-with-lease origin $tag
+            fi

@@ -1,18 +1,33 @@
 name: "CircleCI: Trigger Pipeline"
 description: Trigger a pipeline on CircleCI
-author: CircleCI
+author: Glen Mailer
 branding:
   icon: disc
   color: white
 inputs:
+  token:
+    description: The CircleCI Auth Token, via a secret
+    required: true
   org:
-    description: Name of the GitHub organization being used
+    description: Name of the organization being used, defaults to current
+    required: false
   repo:
-    description: Name of the GitHub repository being used
+    description: Name of the project being used, defaults to current repo
+    required: false
   branch:
-    description: The branch to trigger the pipeline against
+    description: The branch to trigger the pipeline against, defaults to current
+    required: false
   parameters_json:
     description: Pipeline parameters, encoded as JSON
+    required: false
+  vcs:
+    description: CircleCI VCS provider, defaults to github
+    required: false
+outputs:
+  pipeline_id:
+    description: the ID of the triggered pipeline
+  pipeline_number:
+    description: the number of the triggered pipeline
 runs:
   using: node12
   main: action.bundle.js
